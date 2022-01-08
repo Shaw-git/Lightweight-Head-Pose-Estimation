@@ -1,1 +1,1 @@
-# Lightweight-Head-Pose-Estimation
+# Lightweight Head Pose Estimation
