@@ -77,14 +77,11 @@ class Network(nn.Module):
         self.M=M
         self.num_bins = num_bins
         input_shape =(1 , 3 , 224 , 224)
-        # multiplier = [1, 2, 4, 8, 16, 16, 16, 16]
         multiplier = [1, 2, 4, 6, 6, 8, 8, 8]
         kernel =        [3, 3, 3, 5, 5, 5, 3, 0]
         stride =          [2, 2, 1, 2, 1, 2, 1, 0]
 
-        # bandwidth: 每一層Layer所使用的ch數量
         bandwidth = [ base * m for m in multiplier]
-        # 我們只Pruning第三層以後的Layer
         for i in range(3, len(bandwidth)):
             bandwidth[i] = int(bandwidth[i] * width_mult)
 
@@ -154,6 +151,4 @@ if __name__ == '__main__':
     for name, p in net.named_parameters():
         print(name,p.shape)
     print(sum([p.numel() for p in net.parameters()]))
-    from utils import inference_time
-    inference_time(net, end_batch=512, times=10)
 
