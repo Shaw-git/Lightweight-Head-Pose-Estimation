@@ -13,8 +13,16 @@ Head pose estimation is an important step for many human-computer interaction ap
 + Anaconda
 + OpenCV
 + Pytorch
++ Numpy
 
-## Datasets:
+## How to run the code
+```
+python test_network.py --video INPUT_VIDEO_PATH --output OUTPUT_VIDEO_PATH
+```
+
+## Datasets
+
+The model provided in this repo is trained on 300W-LP. For more datasets used in our paper, please refer to the following links.
 
 + [300W-LP, AFLW2000](http://www.cbsr.ia.ac.cn/users/xiangyuzhu/projects/3DDFA/main.htm)
 + [BIWI](https://data.vision.ee.ethz.ch/cvl/gfanelli/head_pose/head_forest.html)
