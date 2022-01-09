@@ -85,11 +85,6 @@ def params_distribution(params, milestone):
         print("%f  < value < %f  :    %.4f " % (milestone[i-1], milestone[i], sum((params > milestone[i-1])&(params < milestone[i]))/length*100  ))
 
 
-def prune_model(model, thres=0.01):
-    params = model.parameters()
-    # for i in len(params):
-    #     params[i] =
-
 def load_filtered_state_dict(model, snapshot):
     # By user apaszke from discuss.pytorch.org
     model_dict = model.state_dict()
@@ -162,6 +157,7 @@ def tensor_board(logger_path):
     except Exception:
         is_tensorboard_available = False
         return is_tensorboard_available, None
+
 def on_server():
     if os.path.exists("/home/ubuntu/ssd/datasets"):
         return False
@@ -203,44 +199,5 @@ def is_minor_error(min_errors,errors):
     return False
 
 def load_snapshot(model, snapshot):
-    saved_state_dict = torch.load(snapshot)
+    saved_state_dict = torch.load(snapshot,map_location=torch.device('cpu'))
     model.load_state_dict(saved_state_dict)
-
-def save_train_test_split(file,train_list, test_list):
-    file.write("BIWI_Train : ")
-    for i in range(len(train_list)):
-        file.write(" %d"%(train_list[i]))
-    file.write("\n")
-    file.write("BIWI_Test : ")
-    for i in range(len(test_list)):
-        file.write(" %d" % (test_list[i]))
-    file.write("\n")
-
-def load_train_test_split(path):
-
-    train = []
-    test = []
-    path +="/BIWI.txt"
-    with  open(path, 'r') as fin:
-        for k, line in enumerate(fin):
-
-            if "BIWI_Train" in line:
-                line  = line.strip().split(":")
-                line = line[1].strip().split()
-                train = np.asarray(line,np.int).tolist()
-
-            elif "BIWI_Test" in line:
-                line = line.strip().split(":")
-                line = line[1].strip().split()
-                test = np.asarray(line, np.int).tolist()
-            if len(train)==16 and len(test)==8:
-                break
-    return train, test
-# def plot_probability(x,y):
-#     x=x.view(-1).cpu().detach().numpy()
-#     y=y.view(-1).cpu().detach().numpy()
-#     plt.title("Probability")
-#     plt.xlabel("Angle")
-#     plt.ylabel("Probability")
-#     plt.plot(x, y)
-#     plt.show()

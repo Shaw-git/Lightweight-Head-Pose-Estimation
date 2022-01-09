@@ -6,19 +6,6 @@ def drawAcross(color, x, y, size=20,pigment=(255, 255, 255)):
     cv2.line(color, (int(x - size), int(y)), (int(x + size), int(y)), pigment, 2)
     cv2.line(color, (int(x), int(y - size)), (int(x), int(y + size)), pigment, 2)
 
-# 把相机坐标系从转换后的坐标系变为原始坐标系
-def headpose_From_Cn_To_Cr(headpose, landmark, intrinsic, center=None):
-    if center==None:
-        center=np.mean(landmark,axis=0)
-    Rt = FromPixelToRotationMatrix(center, intrinsic)
-    HeadToCr = EulerToMatrix(-headpose[0], -headpose[1], -headpose[2])  # inverse(RzRyRx)=     R(-x)R(-y)R(-z)
-    CnToCr = np.mat(Rt).I
-    HeadToCn = np.matmul(CnToCr, HeadToCr)
-    headpose = -1 * MatrixToEuler(HeadToCn)
-    return headpose
-
-
-
 def normalize_headpose(headpose,intrinsic,center):
     Rt = FromPixelToRotationMatrix(center, intrinsic)
     HeadToCr = EulerToMatrix(-headpose[0], -headpose[1], -headpose[2])  # inverse(RzRyRx)=     R(-x)R(-y)R(-z)
@@ -36,14 +23,6 @@ def anti_normalize_headpose(headpose,intrinsic,center):
     headpose = -1 * MatrixToEuler(HeadToCn)
     return headpose
 
-def normalize_glabel(glabel,intrinsic, center):
-
-    Rt = FromPixelToRotationMatrix(center, intrinsic)
-    CoToCn = Rt
-    # CnToCo = np.mat(Rt).I
-    normalized_glabel = np.array(np.matmul(CoToCn, glabel))
-    normalized_glabel = np.reshape(normalized_glabel,-1)
-    return normalized_glabel
 
 def normalize_landmarks(landmarks,intrinsic,center):
     Rt = FromPixelToRotationMatrix(center, intrinsic)
@@ -52,6 +31,15 @@ def normalize_landmarks(landmarks,intrinsic,center):
         p = From_src_To_dst(p, Rt, intrinsic)
         new_marks.append(p)
     return new_marks
+
+
+def normalize_glabel(glabel,intrinsic, center):
+
+    Rt = FromPixelToRotationMatrix(center, intrinsic)
+    CoToCn = Rt
+    normalized_glabel = np.array(np.matmul(CoToCn, glabel))
+    normalized_glabel = np.reshape(normalized_glabel,-1)
+    return normalized_glabel
 
 def anti_normalize_glabel(glabel, intrinsic, center):
 
@@ -62,7 +50,7 @@ def anti_normalize_glabel(glabel, intrinsic, center):
     normalized_glabel = np.reshape(normalized_glabel, -1)
     return normalized_glabel
 
-def warpFace(image,headpose=[],landmark=[],intrinsic=[],center=[]):
+def warpFace(image, headpose=[],landmark=[],intrinsic=[],center=[]):
 
     if len(center)==0:
         center=np.mean(landmark,axis=0)
@@ -120,14 +108,13 @@ def From_src_To_dst(p,Rt,intrinsic):
     d=d/d[2]
     return [d[0],d[1]]
 
-def FromPixelToRotationMatrix(center, intrinsic):   #R * vecter  = v'  Oc 到 Oc‘ 的转换
+def FromPixelToRotationMatrix(center, intrinsic): 
 
     def RotationToMatrix(axis, angle):
-        # 顺时针转坐标转
         axis = axis / np.sqrt(np.sum(np.power(axis, 2), axis=0))
         a = axis[0]
         b = axis[1]
-        c = axis[2]
+        c = axis[2]    # CnToCo = np.mat(Rt).I
         angle = -angle
 
         M = [
@@ -155,7 +142,7 @@ def FromPixelToRotationMatrix(center, intrinsic):   #R * vecter  = v'  Oc 到 Oc
 
     return RotationToMatrix(rotate_axis,rotata_angel)
 
-def drawAxis(img,   headpose, landmarks = None,  size=100):
+def drawAxis(img, headpose, landmarks = None,  size=100):
     roll, yaw, pitch = headpose[0], headpose[1], headpose[2]
     if landmarks!=None:
         tdx=np.mean(landmarks[42:48],axis=0)[0]

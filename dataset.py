@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from torch.utils.data.dataset import Dataset
 from torchvision import transforms
-import tools
+from utils import tools
 import copy
 import imutils
 from PIL import Image
@@ -353,43 +353,43 @@ def orient_nonlinear(para, point ,step =10):
     return np.float32(out)
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    path_300W_LP="/home/ubuntu/ssd/datasets/300W_LP"
-    path_AFLW2000="/home/ubuntu/ssd/datasets/AFLW2000"
-    path_BIWI = "/home/ubuntu/ssd/datasets"
+#     path_300W_LP="/home/ubuntu/ssd/datasets/300W_LP"
+#     path_AFLW2000="/home/ubuntu/ssd/datasets/AFLW2000"
+#     path_BIWI = "/home/ubuntu/ssd/datasets"
 
-    transform = transforms.Compose([transforms.Resize(240),
-                                                transforms.RandomCrop(224),
-                                               ])
+#     transform = transforms.Compose([transforms.Resize(240),
+#                                                 transforms.RandomCrop(224),
+#                                                ])
 
-    # data = AFLW2000( data_dir=path_AFLW2000, rotation=0, random_flip=False, in_memory=False,downsample=2,delta_scale=0.2)
-    data = Data300W_LP(data_dir=path_300W_LP, rotation=0, random_flip=False, in_memory=False ,downsample=0,delta_scale=0, ori=60,  filter=[ 0,1,2])
-    # print(len(data))
-    # data=BIWI(data_dir=path_BIWI,objects=[1], in_memory=False, norm=True)
-    # start = time.time()
+#     # data = AFLW2000( data_dir=path_AFLW2000, rotation=0, random_flip=False, in_memory=False,downsample=2,delta_scale=0.2)
+#     data = Data300W_LP(data_dir=path_300W_LP, rotation=0, random_flip=False, in_memory=False ,downsample=0,delta_scale=0, ori=60,  filter=[ 0,1,2])
+#     # print(len(data))
+#     # data=BIWI(data_dir=path_BIWI,objects=[1], in_memory=False, norm=True)
+#     # start = time.time()
 
-    k=0
-    for i in range(len(data)):
+#     k=0
+#     for i in range(len(data)):
 
-        [image, pose, cons_pose,orient]=data[i]
-        # if cons_pose[2]>85:
-        #     k+=1
-        # if orient>60:
-        #     continue
-        print(cons_pose, orient)
-        # cons_pose = geo_coordinate_to_euler(cons_pose)
-        # print(euler_to_axis_angle(cons_pose))
-        img = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2BGR)
-        # img = tools.drawAxis(img, cons_pose[0],cons_pose[1], cons_pose[2], landmarks=[])
-        # img = data.random_downsample(img,exp=0)
-        # img = data.random_scale(img, 0.2)
-        cv2.imshow("image", img)
-        # print(orient)
-        key = cv2.waitKey(0)&0xff
-        if key ==ord('s'):
-            cv2.imwrite("./bad_image/%d.png"%(i), img)
+#         [image, pose, cons_pose,orient]=data[i]
+#         # if cons_pose[2]>85:
+#         #     k+=1
+#         # if orient>60:
+#         #     continue
+#         print(cons_pose, orient)
+#         # cons_pose = geo_coordinate_to_euler(cons_pose)
+#         # print(euler_to_axis_angle(cons_pose))
+#         img = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2BGR)
+#         # img = tools.drawAxis(img, cons_pose[0],cons_pose[1], cons_pose[2], landmarks=[])
+#         # img = data.random_downsample(img,exp=0)
+#         # img = data.random_scale(img, 0.2)
+#         cv2.imshow("image", img)
+#         # print(orient)
+#         key = cv2.waitKey(0)&0xff
+#         if key ==ord('s'):
+#             cv2.imwrite("./bad_image/%d.png"%(i), img)
 
-    # print("%.3f s" % (time.time() - start))
+#     # print("%.3f s" % (time.time() - start))
 
 
