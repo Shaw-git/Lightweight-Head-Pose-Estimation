@@ -17,8 +17,9 @@ Head pose estimation is an important step for many human-computer interaction ap
 
 ## How to run the code
 ```
-python test_network.py --video INPUT_VIDEO_PATH --output OUTPUT_VIDEO_PATH
+python test_network.py [--video INPUT_VIDEO_PATH] [--output OUTPUT_VIDEO_PATH]
 ```
+If you want to use your webcam, please set '--video' as '0'.
 
 ## Datasets
 
