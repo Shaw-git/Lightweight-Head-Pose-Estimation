@@ -7,6 +7,16 @@ from PIL import Image
 from utils import load_snapshot
 from utils.camera_normalize import drawAxis
 import time
+import argparse
+
+def parse_option():
+    parser = argparse.ArgumentParser('Please set input path and output path', add_help=False)
+    parser.add_argument('--input', type=str, default = "0", help="the path of input stream")
+    parser.add_argument('--output', type=str, default = "", help='where to save the result')
+    args = parser.parse_args()
+
+    return args
+
 
 def scale_bbox(bbox, scale):
     w = max(bbox[2], bbox[3]) * scale
@@ -15,7 +25,25 @@ def scale_bbox(bbox, scale):
     return np.asarray([x,y,w,w],np.int64)
 
 def main():
-    cap = cv2.VideoCapture(0)
+    args = parse_option()
+    if len(args.input)==1:
+        if ord('0')<=ord(args.input) and ord(args.input)<=ord('9'):
+            cap = cv2.VideoCapture(int(args.input))
+        else:
+            print("invalid input path")
+            exit()
+    else:
+        cap = cv2.VideoCapture(args.input)
+
+    
+    outstream = None
+    if args.output != "":
+        frame_size = [int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                      int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))]
+        outstream = cv2.VideoWriter(args.output, 
+                         cv2.VideoWriter_fourcc(*'MJPG'),
+                         25, frame_size)
+
     face_cascade = cv2.CascadeClassifier('lbpcascade_frontalface_improved.xml')
     pose_estimator = Network(bin_train=False)
     load_snapshot(pose_estimator,"./models/model-b66.pkl")
@@ -60,9 +88,16 @@ def main():
                     drawAxis(img, headpose,size=50)
 
         cv2.imshow("Result", frame)
+        if outstream is not None:
+            outstream.write(frame)
+
         key = cv2.waitKey(1)
-        if key==27:
+        if key==27 or key == ord("q"):
             break
         count+=1
+    if outstream is not None:
+        outstream.release()
 
-main()
+
+if __name__ == '__main__':
+    main()
