@@ -21,7 +21,7 @@ python test_network.py [--input INPUT_VIDEO_PATH] [--output OUTPUT_VIDEO_PATH]
 ```
 If you want to use your webcam, please set [--input "0"].
 
-If you want to use mtcnn to detect face, please install [MTCNN](https://github.com/ipazc/mtcnn) and [Tensorflow] (https://www.tensorflow.org/install) and run the following code.
+If you want to use mtcnn to detect face, please install [MTCNN](https://github.com/ipazc/mtcnn) and [Tensorflow](https://www.tensorflow.org/install) and run the following code.
 ```
 python test_network_mtcnn.py [--input INPUT_VIDEO_PATH] [--output OUTPUT_VIDEO_PATH]
 ```
